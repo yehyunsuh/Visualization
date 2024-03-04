@@ -8,6 +8,7 @@ from io import BytesIO
 from tqdm import tqdm
 
 from utils import *
+from rotation import *
 
 
 def parameters(theta_1, theta_2, theta_3):
@@ -24,41 +25,34 @@ def parameters(theta_1, theta_2, theta_3):
     return camera_angle_radian, object_plane, projection_plane, origin, camera_source
 
 
-def rotation_of_camera_and_projection_plane(args, theta_1, theta_2, theta_3):
+def baseline_camera_and_projection_plane(args, theta_1, theta_2, theta_3):
     camera_angle_radian, object_plane, projection_plane, origin, camera_source = parameters(theta_1, theta_2, theta_3)
-
+    
     # Rotation matrix
     rotation_matrix = euler_angles_to_rotation_matrix(camera_angle_radian)
 
-    # Rotate the camera
-    camera_rotate = rotation_matrix @ camera_source.T
-
-    # Rotate the projection plane
-    projection_plane_coordinate = np.stack([projection_plane[0].flatten(), projection_plane[1].flatten(), projection_plane[2].flatten()])
-    projection_plane_rotated = rotation_matrix @ projection_plane_coordinate
-    projection_plane_rotated = projection_plane_rotated.reshape(3, args.num_points, args.num_points)
-
-    # Center of the projection plane rotated
-    projection_plane_rotated_center = np.mean(np.mean(projection_plane_rotated, axis=1), axis=1)
+    camera_rotate = rotation_of_camera(
+        rotation_matrix, camera_source
+    )
+    projection_plane_rotated_center, projection_plane_rotated = rotation_of_projection_plane(
+        args, rotation_matrix, projection_plane
+    )
 
     return camera_rotate, origin, projection_plane_rotated_center, object_plane, projection_plane_rotated
 
 
-def rotation_of_object_plane(args, theta_1, theta_2, theta_3):
+def baseline_object_plane(args, theta_1, theta_2, theta_3):
     camera_angle_radian, object_plane, projection_plane, origin, camera_source = parameters(theta_1, theta_2, theta_3)
 
     # Rotation matrix
     rotation_matrix = euler_angles_to_rotation_matrix(camera_angle_radian)
 
-    # Rotate the object plane
-    object_plane_coordinate = np.stack([object_plane[0].flatten(), object_plane[1].flatten(), object_plane[2].flatten()])
-    object_plane_rotated = rotation_matrix @ object_plane_coordinate
-    object_plane_rotated = object_plane_rotated.reshape(3, args.num_points, args.num_points)
-
-    # Center of the projection plane
-    projection_plane_center = np.mean(np.mean(projection_plane, axis=1), axis=1)
+    projection_plane_center, object_plane_rotated = rotation_of_object_plane(
+        args, object_plane, rotation_matrix, projection_plane
+    )
 
     return camera_source, origin, projection_plane_center, object_plane_rotated, projection_plane
+
 
 
 def baseline_visualization(args, theta_1, theta_2, theta_3, camera_position, origin, projection_plane_center, object_plane, projection_plane):
@@ -87,33 +81,29 @@ def baseline_visualization(args, theta_1, theta_2, theta_3, camera_position, ori
     plt.savefig(buf, format='png')
     buf.seek(0)
     image_buffer = imageio.imread(buf)
-
-    # plt.savefig(f'visualization/light_source_projection/{theta_1}_{theta_2}_{theta_3}.png')
     plt.close()
 
     return image_buffer
 
 
 def baseline_projection(args, theta_1, theta_2, theta_3):
-    images_camera_rotation, images_object_plane_rotation = [], []
-    camera_position, origin, projection_plane_center, object_plane, projection_plane = rotation_of_camera_and_projection_plane(
+    # Rotation of camera and projection plane
+    camera_position, origin, projection_plane_center, object_plane, projection_plane = baseline_camera_and_projection_plane(
         args, theta_1, theta_2, theta_3
     )
     image_buffer_camera_rotation = baseline_visualization(
         args, theta_1, theta_2, theta_3, camera_position, origin, projection_plane_center, object_plane, projection_plane
     )
 
-    camera_position, origin, projection_plane_center, object_plane, projection_plane = rotation_of_object_plane(
+    # Rotation of object plane
+    camera_position, origin, projection_plane_center, object_plane, projection_plane = baseline_object_plane(
         args, theta_1, theta_2, theta_3
     )
     image_buffer_object_plane_rotation = baseline_visualization(
         args, theta_1, theta_2, theta_3, camera_position, origin, projection_plane_center, object_plane, projection_plane
     )
 
-    images_camera_rotation.append(image_buffer_camera_rotation)
-    images_object_plane_rotation.append(image_buffer_object_plane_rotation)
-
-    return images_camera_rotation, images_object_plane_rotation
+    return image_buffer_camera_rotation, image_buffer_object_plane_rotation
     
 
 def circle_projection():
