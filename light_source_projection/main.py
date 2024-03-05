@@ -118,35 +118,40 @@ def main(args):
     images_circle, images_translated_circle = [], []
     images_translated_circle2 = []
 
-    theta_1_array = np.linspace(0, 0, 1, dtype=int)
-    theta_2_array = np.linspace(0, 30, 31, dtype=int)
-    theta_3_array = np.linspace(0, 0, 1, dtype=int)
-    for theta_1 in tqdm(theta_1_array):
-        for theta_2 in theta_2_array:
-            for theta_3 in theta_3_array:
-                images_baseline.append(baseline_projection(args, theta_1, theta_2, theta_3))
-                images_random_point.append(random_point_projection(args, theta_1, theta_2, theta_3, points))
-                images_circle.append(random_point_projection(args, theta_1, theta_2, theta_3, circle_points))
-                images_translated_circle.append(random_point_projection(args, theta_1, theta_2, theta_3, translated_circle_points))
-                images_translated_circle2.append(random_point_projection(args, theta_1, theta_2, theta_3, translated_circle_points2))
+    # theta_1_array = np.linspace(0, 0, 1, dtype=int)
+    # theta_2_array = np.linspace(0, 30, 31, dtype=int)
+    # theta_3_array = np.linspace(0, 0, 1, dtype=int)
+    # for theta_1 in tqdm(theta_1_array):
+    #     for theta_2 in theta_2_array:
+    #         for theta_3 in theta_3_array:
+    #             images_baseline.append(baseline_projection(args, theta_1, theta_2, theta_3))
+    #             images_random_point.append(random_point_projection(args, theta_1, theta_2, theta_3, points))
+    #             images_circle.append(random_point_projection(args, theta_1, theta_2, theta_3, circle_points))
+    #             images_translated_circle.append(random_point_projection(args, theta_1, theta_2, theta_3, translated_circle_points))
+    #             images_translated_circle2.append(random_point_projection(args, theta_1, theta_2, theta_3, translated_circle_points2))
 
-    theta_1_array = np.linspace(1, 30, 30, dtype=int)
-    theta_2_array = np.linspace(30, 30, 1, dtype=int)
-    theta_3_array = np.linspace(0, 0, 1, dtype=int)
-    for theta_1 in tqdm(theta_1_array):
-        for theta_2 in theta_2_array:
-            for theta_3 in theta_3_array:
-                images_baseline.append(baseline_projection(args, theta_1, theta_2, theta_3))
-                images_random_point.append(random_point_projection(args, theta_1, theta_2, theta_3, points))
-                images_circle.append(random_point_projection(args, theta_1, theta_2, theta_3, circle_points))
-                images_translated_circle.append(random_point_projection(args, theta_1, theta_2, theta_3, translated_circle_points))
-                images_translated_circle2.append(random_point_projection(args, theta_1, theta_2, theta_3, translated_circle_points2))
+    # theta_1_array = np.linspace(1, 30, 30, dtype=int)
+    # theta_2_array = np.linspace(30, 30, 1, dtype=int)
+    # theta_3_array = np.linspace(0, 0, 1, dtype=int)
+    # for theta_1 in tqdm(theta_1_array):
+    #     for theta_2 in theta_2_array:
+    #         for theta_3 in theta_3_array:
+    #             images_baseline.append(baseline_projection(args, theta_1, theta_2, theta_3))
+    #             images_random_point.append(random_point_projection(args, theta_1, theta_2, theta_3, points))
+    #             images_circle.append(random_point_projection(args, theta_1, theta_2, theta_3, circle_points))
+    #             images_translated_circle.append(random_point_projection(args, theta_1, theta_2, theta_3, translated_circle_points))
+    #             images_translated_circle2.append(random_point_projection(args, theta_1, theta_2, theta_3, translated_circle_points2))
 
-    imageio.mimsave('visualization/light_source_projection/light_source_camera_rotation.gif', images_baseline, 'GIF', fps=10, loop=3)
-    imageio.mimsave('visualization/light_source_projection/light_source_random_point.gif', images_random_point, 'GIF', fps=10, loop=3)
-    imageio.mimsave('visualization/light_source_projection/light_source_circle.gif', images_circle, 'GIF', fps=10, loop=3)
-    imageio.mimsave('visualization/light_source_projection/light_source_translated_circle.gif', images_translated_circle, 'GIF', fps=10, loop=3)
-    imageio.mimsave('visualization/light_source_projection/light_source_translated_circle2.gif', images_translated_circle2, 'GIF', fps=10, loop=3)
+    os.makedirs('visualization/light_source_projection/light_source_camera_rotation', exist_ok=True)
+    # imageio.mimsave('visualization/light_source_projection/light_source_camera_rotation/light_source_camera_rotation_ab.gif', images_baseline, 'GIF', fps=10, loop=3)
+    os.makedirs('visualization/light_source_projection/light_source_random_point', exist_ok=True)
+    # imageio.mimsave('visualization/light_source_projection/light_source_random_point/light_source_random_point_ab.gif', images_random_point, 'GIF', fps=10, loop=3)
+    os.makedirs('visualization/light_source_projection/light_source_circle', exist_ok=True)
+    # imageio.mimsave('visualization/light_source_projection/light_source_circle/light_source_circle_ab.gif', images_circle, 'GIF', fps=10, loop=3)
+    os.makedirs('visualization/light_source_projection/light_source_translated_circle', exist_ok=True)
+    # imageio.mimsave('visualization/light_source_projection/light_source_translated_circle/light_source_translated_circle_ab.gif', images_translated_circle, 'GIF', fps=10, loop=3)
+    os.makedirs('visualization/light_source_projection/light_source_translated_circle2', exist_ok=True)
+    # imageio.mimsave('visualization/light_source_projection/light_source_translated_circle2/light_source_translated_circle2_ab.gif', images_translated_circle2, 'GIF', fps=10, loop=3)
 
 
 if __name__ == '__main__':
