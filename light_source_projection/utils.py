@@ -3,8 +3,8 @@ import numpy as np
 
 def create_object_plane(args):
     # define a grid of x, y, and z values
-    x = np.linspace(-args.object_plane_size, args.object_plane_size, args.num_points)
-    y = np.linspace(-args.object_plane_size, args.object_plane_size, args.num_points)
+    x = np.linspace(-args.object_plane_size, args.object_plane_size, args.n_plane_points)
+    y = np.linspace(-args.object_plane_size, args.object_plane_size, args.n_plane_points)
     x, y = np.meshgrid(x, y)
     z = np.zeros_like(x)
     
@@ -13,12 +13,26 @@ def create_object_plane(args):
 
 def create_projection_plane(args):
     # define a grid of x and y values
-    x = np.linspace(-args.projection_plane_size, args.projection_plane_size, args.num_points)
-    y = np.linspace(-args.projection_plane_size, args.projection_plane_size, args.num_points)
+    x = np.linspace(-args.projection_plane_size, args.projection_plane_size, args.n_plane_points)
+    y = np.linspace(-args.projection_plane_size, args.projection_plane_size, args.n_plane_points)
     x, y = np.meshgrid(x, y)
     z = np.zeros_like(x) - args.camera_distance
     
     return  x, y, z
+
+
+def parameters(args, theta_1, theta_2, theta_3):
+    # Angle of the camera
+    camera_angle_radian = np.radians([theta_1, theta_2, theta_3])
+
+    object_plane = create_object_plane(args)
+    projection_plane = create_projection_plane(args)
+
+    # Parameters for the camera
+    origin = np.array([0, 0, 0])
+    camera_source = np.array([0, 0, 1]) * args.camera_distance
+
+    return camera_angle_radian, object_plane, projection_plane, origin, camera_source
 
 
 def calculate_angle_between_vectors(v_1, v_2):

@@ -34,7 +34,7 @@ def rotation_of_object_plane(args, object_plane, rotation_matrix, projection_pla
     # Rotate the object plane
     object_plane_coordinate = np.stack([object_plane[0].flatten(), object_plane[1].flatten(), object_plane[2].flatten()])
     object_plane_rotated = rotation_matrix @ object_plane_coordinate
-    object_plane_rotated = object_plane_rotated.reshape(3, args.num_points, args.num_points)
+    object_plane_rotated = object_plane_rotated.reshape(3, args.n_plane_points, args.n_plane_points)
 
     # Center of the projection plane
     projection_plane_center = np.mean(np.mean(projection_plane, axis=1), axis=1)
@@ -46,9 +46,15 @@ def rotation_of_projection_plane(args, rotation_matrix, projection_plane):
     # Rotate the projection plane
     projection_plane_coordinate = np.stack([projection_plane[0].flatten(), projection_plane[1].flatten(), projection_plane[2].flatten()])
     projection_plane_rotated = rotation_matrix @ projection_plane_coordinate
-    projection_plane_rotated = projection_plane_rotated.reshape(3, args.num_points, args.num_points)
+    projection_plane_rotated = projection_plane_rotated.reshape(3, args.n_plane_points, args.n_plane_points)
 
     # Center of the projection plane rotated
     projection_plane_rotated_center = np.mean(np.mean(projection_plane_rotated, axis=1), axis=1)
 
     return projection_plane_rotated_center, projection_plane_rotated
+
+
+def rotation_of_points(rotation_matrix, points):
+    rotated_points = rotation_matrix @ points
+
+    return rotated_points
